@@ -22,7 +22,7 @@ namespace QFramework
         protected override void OnInit()
         {
             mTimeMgr = new TimeMgr();
-            PublicMono.instance.OnFixedUpdate += Update;
+            PublicMono.Instance.OnFixedUpdate += Update;
             MonoBehaviour.print("build a TimeSystem");
         }
         Timer ITimeSystem.Add(float delayTime, bool isLoop, Action<Timer> onFinishedTime)

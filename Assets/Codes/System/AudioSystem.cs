@@ -65,7 +65,7 @@ namespace QFramework
         }
         private void OnStopBgm(StopBgmEvent e)
         {
-            PublicMono.instance.OnUpdate += Update;
+            PublicMono.Instance.OnUpdate += Update;
             if (mBgm == null || !mBgm.isPlaying) return;
             mFade.SetState(FadeState.FadeOut, () =>
             {
@@ -93,13 +93,13 @@ namespace QFramework
             }
             mClipPool.Get("Audio/Bgm/" + name, audioCilp =>
              {
-                 PublicMono.instance.OnUpdate += Update;
+                 PublicMono.Instance.OnUpdate += Update;
                  //如果没有东西在播放
                  if (!mBgm.isPlaying)
                  {
                      mFade.SetState(FadeState.FadeIn, () =>
                       {
-                          PublicMono.instance.OnUpdate -= Update;
+                          PublicMono.Instance.OnUpdate -= Update;
                       });
                      mBgm.clip = audioCilp;
                      mBgm.Play();
@@ -110,7 +110,7 @@ namespace QFramework
                      {
                          mFade.SetState(FadeState.FadeIn, () =>
                          {
-                             PublicMono.instance.OnUpdate -= Update;
+                             PublicMono.Instance.OnUpdate -= Update;
                          });
                          mBgm.clip = audioCilp;
                          mBgm.Play();

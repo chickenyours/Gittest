@@ -27,7 +27,7 @@ public class GameModel : AbstractModel,IGameModel
 
     protected override void OnInit()
     {
-        PublicMono.instance.OnUpdate += Update;
+        PublicMono.Instance.OnUpdate += Update;
     }
     //不断更新数据
     void Update()

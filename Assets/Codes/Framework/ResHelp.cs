@@ -19,7 +19,7 @@ namespace QFramework
         }
         public static void LoadAsync<T>(string name, System.Action<T> callBack) where T : Object
         {
-            PublicMono.instance.StartCoroutine(AsynLoadres(name,callBack));
+            PublicMono.Instance.StartCoroutine(AsynLoadres(name,callBack));
         }
     }
 }

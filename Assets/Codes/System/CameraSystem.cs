@@ -12,7 +12,7 @@ public class CameraSystem : AbstractSystem,ICameraSystem
 
     protected override void OnInit()
     {
-        PublicMono.instance.OnLateUpdate += Update;
+        PublicMono.Instance.OnLateUpdate += Update;
     }
 
     void ICameraSystem.SetTarget(Transform transform)
