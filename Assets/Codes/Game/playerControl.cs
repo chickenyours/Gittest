@@ -43,7 +43,7 @@ namespace PlayerControl
             fireCurrentTime = 0f;
             this.GetSystem<ICameraSystem>().SetTarget(this.transform);
             this.GetSystem<IAudioMgrSystem>().PlayBgm("Boss 2");
-            this.GetSystem<IAudioMgrSystem>().BgmVolume.Value = bgmVolume;
+            this.GetModel<IAudioModel>().BgmVolume.Value = bgmVolume;
         }
         private void Update()
         {
@@ -130,6 +130,8 @@ namespace PlayerControl
             this.GetModel<IGameModel>().direction.Value = direction;
             //改变脸部朝向
             directionSprite.localPosition = new Vector2(directionX * direction,directionSprite.localPosition.y);
+            //监测音量改变
+            this.GetModel<IAudioModel>().BgmVolume.Value = bgmVolume;
         }
         private void LateUpdate()
         {

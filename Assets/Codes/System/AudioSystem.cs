@@ -21,14 +21,11 @@ namespace QFramework
         void StopSound(AudioSource source);
         void StopPlay(AudioSource source);
         void StopPlayBgm();
-        BindableProperty<float> SoundVolume { get; }
-        BindableProperty<float> BgmVolume { get; }
     }
     public class AudioSystem : AbstractSystem, IAudioMgrSystem
     {
         public static AudioSystem instance;
-        public BindableProperty<float> SoundVolume { get; set; } = new BindableProperty<float>(1);
-        public BindableProperty<float> BgmVolume { get; set; } = new BindableProperty<float>(1);
+        private IAudioModel mAudioModel;
         private AudioSource mBgm;
         private AudioSource tempSound;
         private ResPool<AudioClip> mClipPool;
@@ -39,28 +36,32 @@ namespace QFramework
             //判断单例
             if (AudioSystem.instance == null || AudioSystem.instance == this) AudioSystem.instance = this;
             else return;
+            //实例化游戏播放器
             tempSound = new AudioSource();
             mSourcePool = new ComponentPool<AudioSource>("GameSound");
             mClipPool = new ResPool<AudioClip>();
+            //数据模块
+            mAudioModel = this.GetModel<IAudioModel>();
             //淡化渐入模块
             mFade = new FadeNum();
-            mFade.SetMaxMin(BgmVolume.Value,0);
-
+            mFade.SetMaxMin(mAudioModel.BgmVolume.Value,0);
+            //注意：注册值改变时会首次运行委托函数，初始化时应在后面注册
+            mAudioModel.SoundVolume.RegisterWithInitValue(OnSoundVolumeChanged);
+            mAudioModel.BgmVolume.RegisterWithInitValue(OnBgmVolumeChanged);
             this.RegisterEvent<StopBgmEvent>(OnStopBgm);
-
-            SoundVolume.RegisterWithInitValue(OnSoundVolumeChanged); 
-            BgmVolume.RegisterWithInitValue(OnBgmVolumeChanged);
         }
         private void OnBgmVolumeChanged(float v)
         {
+            MonoBehaviour.print("hhhh");
             mFade.SetMaxMin(v,0);
-            if(mBgm) mBgm.volume = BgmVolume.Value;
+            if(mBgm) mBgm.volume = mAudioModel.BgmVolume.Value;
         }
         private void OnSoundVolumeChanged(float v)
         {
+            MonoBehaviour.print("asdfasdfa");
             mSourcePool.SetAllComponent(audiosource =>
             {
-                audiosource.volume = SoundVolume.Value;
+                audiosource.volume =mAudioModel.SoundVolume.Value;
             });
         }
         private void OnStopBgm(StopBgmEvent e)
@@ -130,7 +131,7 @@ namespace QFramework
             {
                 tempSound.clip = clip;
                 tempSound.loop = true;
-                tempSound.volume = SoundVolume.Value;
+                tempSound.volume = mAudioModel.SoundVolume.Value;
                 callBack(tempSound);
             });
         }
@@ -142,7 +143,7 @@ namespace QFramework
             {
                 tempSound.clip = clip;
                 tempSound.loop = false;
-                tempSound.volume = SoundVolume.Value;
+                tempSound.volume =mAudioModel.SoundVolume.Value;
                 tempSound.Play();
             });
         }

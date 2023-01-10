@@ -11,6 +11,7 @@ namespace QFramework
     {
         protected override void Init()
         {
+            RegisterModel<IAudioModel>(new AudioModel());
             RegisterModel<IGameModel>(new GameModel());
             RegisterSystem<ICameraSystem>(new CameraSystem());
             RegisterSystem<IAudioMgrSystem>(new AudioSystem());
