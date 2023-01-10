@@ -6,7 +6,7 @@ using QFramework;
 
 namespace PlayerControl
 {
-    public class playerControl : MonoBehaviour,IController
+    public class playerControl : GameControll
     {
         private Rigidbody2D mrig;
         //获取护卫
@@ -44,6 +44,10 @@ namespace PlayerControl
             this.GetSystem<ICameraSystem>().SetTarget(this.transform);
             this.GetSystem<IAudioMgrSystem>().PlayBgm("Boss 2");
             this.GetModel<IAudioModel>().BgmVolume.Value = bgmVolume;
+            this.GetSystem<ITimeSystem>().Add(3f, false, o =>
+              {
+                  this.GetSystem<IAudioMgrSystem>().PlayBgm("One Day");
+              });
         }
         private void Update()
         {
@@ -171,10 +175,6 @@ namespace PlayerControl
                 this.GetSystem<IAudioMgrSystem>().PlaySound("eatGold"); 
                 Destroy(other.gameObject);
             }
-        }
-        IArchitecture IBelongToArchitecture.GetArchitecture()
-        {
-            return Game.Interface;
         }
     }
 }

@@ -18,7 +18,7 @@ public class PanelResetGame : MonoBehaviour,IController
     {
         this.GetModel<IGameModel>().score.Value = 0;
         this.GetModel<IGameModel>().shootTime.Value = 1;
-        this.SendCommand<LoadScene>(new LoadScene("SimpleScene"));
+        this.SendCommand<LoadScene>(new LoadScene("Welcome"));
     }
     
     IArchitecture IBelongToArchitecture.GetArchitecture()

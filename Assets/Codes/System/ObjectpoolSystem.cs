@@ -38,7 +38,7 @@ namespace QFramework
         /// <returns></returns>
         GameObject IObjectPoolSystem.Get(string name)
         {
-            return mPoolDic.TryGetValue(name, out PoolData data) && data.canGet ? data.Get() : new GameObject(name); 
+            return mPoolDic.TryGetValue(name, out PoolData data) && data.canGet ? data.Get() : ResHelp.SyncLoad<GameObject>(name); 
         }
         /// <summary>
         /// 异步加载获取一个GameObject(Resource根目录下查找)

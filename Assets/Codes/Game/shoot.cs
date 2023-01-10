@@ -5,7 +5,7 @@ using PlayerControl;
 using QFramework;
 using System;
 
-public class shoot : MonoBehaviour,IController
+public class shoot : GameControll
 {
     private static int shoots = 0;
     /// <summary>
@@ -69,9 +69,5 @@ public class shoot : MonoBehaviour,IController
     {
         int a = this.GetModel<IGameModel>().shootTime.Value++;
         print(a);
-    }
-    IArchitecture IBelongToArchitecture.GetArchitecture()
-    {
-        return Game.Interface;
     }
 }

@@ -2,7 +2,7 @@
 using QFramework;
 using UnityEngine;
 
-public class NextLevel : MonoBehaviour,IController
+public class NextLevel : GameControll
 {
     private void Start()
     {
@@ -16,8 +16,4 @@ public class NextLevel : MonoBehaviour,IController
         gameObject.SetActive(true);
     }
 
-    public IArchitecture GetArchitecture()
-    {
-        return Game.Interface;
-    }
 }

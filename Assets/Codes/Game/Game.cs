@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QFramework;
+﻿using QFramework;
+using UnityEngine;
 
 namespace QFramework
 {
@@ -18,5 +14,10 @@ namespace QFramework
             RegisterSystem<IObjectPoolSystem>(new ObjectpoolSystem());
             RegisterSystem<ITimeSystem>(new TimeSystem());
         }
+    }
+    //继承IControll的便利形式
+    public class GameControll : MonoBehaviour, IController
+    {
+        IArchitecture IBelongToArchitecture.GetArchitecture() => Game.Interface;
     }
 }
