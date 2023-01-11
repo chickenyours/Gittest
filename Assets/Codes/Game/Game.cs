@@ -13,6 +13,7 @@ namespace QFramework
             RegisterSystem<IAudioMgrSystem>(new AudioSystem());
             RegisterSystem<IObjectPoolSystem>(new ObjectpoolSystem());
             RegisterSystem<ITimeSystem>(new TimeSystem());
+            RegisterModel<IUIModel>(new UIModel());
         }
     }
     //继承IControll的便利形式

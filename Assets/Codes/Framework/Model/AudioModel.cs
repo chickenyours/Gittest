@@ -11,7 +11,7 @@ namespace QFramework
     class AudioModel : AbstractModel, IAudioModel
     {
         public BindableProperty<float> SoundVolume { get; } = new BindableProperty<float>(1);
-        public BindableProperty<float> BgmVolume { get; } = new BindableProperty<float>(1);
+        public BindableProperty<float> BgmVolume { get; } = new BindableProperty<float>(0.5f);
         protected override void OnInit()
         {
 

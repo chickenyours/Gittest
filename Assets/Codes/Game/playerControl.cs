@@ -29,8 +29,11 @@ namespace PlayerControl
         /// 内存储射击间隔时间
         /// </summary>
         private float fireCurrentTime;
+        //获取输入执行判断接口
+        private IUIModel mUIModel;
         private void Start()
         {
+            mUIModel = this.GetModel<IUIModel>();
             mrig = gameObject.GetComponent<Rigidbody2D>();
             directionSprite = transform.Find("Direction");
             directionSprite.localPosition = new Vector2(directionX,0);
@@ -42,7 +45,8 @@ namespace PlayerControl
         }
         private void Update()
         {
-            if (Input.GetKey(KeyCode.J) || Input.GetMouseButton(0)) 
+            if (!mUIModel.isSettingPanelOpen.Value &&
+                ( Input.GetKey(KeyCode.J) || Input.GetMouseButton(0))) 
             {
                 if(fireCurrentTime >= FireInterval)
                 {
@@ -102,7 +106,7 @@ namespace PlayerControl
                 }
                 else { fireCurrentTime += Time.deltaTime; }
             }
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (!mUIModel.isSettingPanelOpen.Value && Input.GetKeyDown(KeyCode.Space))
             {
                 if(Mathf.Abs( mrig.velocity.y )<= float.Epsilon) isJump = true;
             }
@@ -116,7 +120,7 @@ namespace PlayerControl
                 mrig.velocity = new Vector2(mrig.velocity.x, jumpspead);
             }
             //获取输入并改变位移
-            float h = Input.GetAxisRaw("Horizontal");
+            float h = !mUIModel.isSettingPanelOpen.Value ? Input.GetAxisRaw("Horizontal") : 0;
             mrig.velocity = h != 0 ? 
                 new Vector2(Mathf.Clamp(mrig.velocity.x + h*moveAc,-movespeadMax,movespeadMax), mrig.velocity.y) :  
                 new Vector2(Mathf.MoveTowards(mrig.velocity.x,0,moveDx),mrig.velocity.y);

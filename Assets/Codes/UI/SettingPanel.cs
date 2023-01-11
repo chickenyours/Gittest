@@ -16,6 +16,8 @@ public class SettingPanel : GameControll
         //判断SettingPanel是否有一个
         if (intence != null && intence != gameObject) Destroy(gameObject);
         else intence = this.gameObject;
+        //更新访问方式
+        this.GetModel<IUIModel>().isSettingPanelOpen.Value = true;
         //获取组件和数据信息
         mAudioModel = this.GetModel<IAudioModel>();
         transform.Find("BackBin").gameObject.GetComponent<Button>().onClick.AddListener(OnCloseBin);
@@ -24,15 +26,21 @@ public class SettingPanel : GameControll
         BgmSliderValue = BgmSlider.transform.Find("Value").GetComponent<Text>();
         BgmSlider.onValueChanged.AddListener(OnBgmVolumeChange);
         BgmSlider.value = mAudioModel.BgmVolume.Value;
+        BgmSliderValue.text = Mathf.Round(BgmSlider.value * 100).ToString();
         //设置SoundSlider
         var Soundslider = transform.Find("SoundSlider").GetComponent<Slider>();
         SoundsliderValue = Soundslider.transform.Find("Value").GetComponent<Text>();
         Soundslider.onValueChanged.AddListener(OnSoundVolumeChange);
         Soundslider.value = mAudioModel.SoundVolume.Value;
+        SoundsliderValue.text = Mathf.Round(Soundslider.value * 100).ToString();
     }
     private void OnCloseBin()
     {
         Destroy(gameObject);
+    }
+    private void OnDisable()
+    {
+        this.GetModel<IUIModel>().isSettingPanelOpen.Value = false;
     }
     private void OnBgmVolumeChange(float arg)
     {
