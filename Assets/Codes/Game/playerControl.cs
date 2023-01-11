@@ -29,10 +29,6 @@ namespace PlayerControl
         /// 内存储射击间隔时间
         /// </summary>
         private float fireCurrentTime;
-        /// <summary>
-        /// 公开一个bgm播放幅度
-        /// </summary>
-        public float bgmVolume;
         private void Start()
         {
             mrig = gameObject.GetComponent<Rigidbody2D>();
@@ -42,12 +38,7 @@ namespace PlayerControl
             mEyeDown = transform.Find("eyeDown");
             fireCurrentTime = 0f;
             this.GetSystem<ICameraSystem>().SetTarget(this.transform);
-            this.GetSystem<IAudioMgrSystem>().PlayBgm("Boss 2");
-            this.GetModel<IAudioModel>().BgmVolume.Value = bgmVolume;
-            this.GetSystem<ITimeSystem>().Add(3f, false, o =>
-              {
-                  this.GetSystem<IAudioMgrSystem>().PlayBgm("One Day");
-              });
+            this.GetSystem<IAudioMgrSystem>().PlayBgm("in the autumn sky");
         }
         private void Update()
         {
@@ -134,8 +125,6 @@ namespace PlayerControl
             this.GetModel<IGameModel>().direction.Value = direction;
             //改变脸部朝向
             directionSprite.localPosition = new Vector2(directionX * direction,directionSprite.localPosition.y);
-            //监测音量改变
-            this.GetModel<IAudioModel>().BgmVolume.Value = bgmVolume;
         }
         private void LateUpdate()
         {

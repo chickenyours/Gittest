@@ -855,7 +855,7 @@ MonoBehaviour:
   jumpspead: 80
   direction: 1
   fireInterval: 10
-  bgmVolume: 0
+  bgmVolume: 0.5
 --- !u!50 &725974898
 Rigidbody2D:
   serializedVersion: 4
