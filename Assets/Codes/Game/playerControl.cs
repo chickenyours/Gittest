@@ -16,7 +16,6 @@ namespace PlayerControl
         public float moveAc = 0.2f;
         public float moveDx = 0.1f;
         public float jumpspead = 20f;
-        private bool isJump = false;
         public int direction = 1;
         private Transform directionSprite;
         private float directionX = 0.7f;
@@ -29,31 +28,55 @@ namespace PlayerControl
         /// 内存储射击间隔时间
         /// </summary>
         private float fireCurrentTime;
+
+        //储存位移输入变量
+        private int mInputX;
+        private int mInputY;
+        //储存跳跃的变量
+        private bool isJump;
+        //储存射击的变量
+        private bool mAttackInput;
+
         //获取输入执行判断接口
         private IUIModel mUIModel;
         private void Start()
         {
-            mUIModel = this.GetModel<IUIModel>();
+            //mUIModel = this.GetModel<IUIModel>();
             mrig = gameObject.GetComponent<Rigidbody2D>();
+            //获取子对象
             directionSprite = transform.Find("Direction");
             directionSprite.localPosition = new Vector2(directionX,0);
             mEyeUp = transform.Find("eyeUp");
             mEyeDown = transform.Find("eyeDown");
+            //定义参数属性
             fireCurrentTime = 0f;
             this.GetSystem<ICameraSystem>().SetTarget(this.transform);
             this.GetSystem<IAudioMgrSystem>().PlayBgm("in the autumn sky");
+            //注册输入事件
+            this.RegisterEvent<MoveInputEvent>(e =>
+            {
+                mInputX = e.inputX;
+                mInputY = e.inputY;
+            });
+            this.RegisterEvent<JumpInputEvent>(e =>
+            {
+                isJump = true;
+            });
+            this.RegisterEvent<ShootInputEvent>(e =>
+            {
+                mAttackInput = e.isTrigger;
+            });
         }
         private void Update()
         {
-            if (!mUIModel.isSettingPanelOpen.Value &&
-                ( Input.GetKey(KeyCode.J) || Input.GetMouseButton(0))) 
+            if (mAttackInput)
             {
                 if(fireCurrentTime >= FireInterval)
                 {
                     //获取Target的坐标
                     Vector3 mousePosition = new Vector3(
-                        this.GetModel<IGameModel>().mouseWorldX.Value, 
-                        this.GetModel<IGameModel>().mouseWorldY.Value,
+                        this.GetModel<IGameModel>().mousePosition.Value.x, 
+                        this.GetModel<IGameModel>().mousePosition.Value.y,
                         0);
                     mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
                     mousePosition.z = 0;
@@ -106,23 +129,21 @@ namespace PlayerControl
                 }
                 else { fireCurrentTime += Time.deltaTime; }
             }
-            if (!mUIModel.isSettingPanelOpen.Value && Input.GetKeyDown(KeyCode.Space))
-            {
-                if(Mathf.Abs( mrig.velocity.y )<= float.Epsilon) isJump = true;
-            }
         }
         private void FixedUpdate()
         {
-            if ( isJump)
+            if ( isJump )
             {
+                if(Mathf.Abs(mrig.velocity.y) <= float.Epsilon)
+                {
+                    this.GetSystem<IAudioMgrSystem>().PlaySound("jump");
+                    mrig.velocity = new Vector2(mrig.velocity.x, jumpspead);
+                }
                 isJump = false;
-                this.GetSystem<IAudioMgrSystem>().PlaySound("jump"); 
-                mrig.velocity = new Vector2(mrig.velocity.x, jumpspead);
             }
             //获取输入并改变位移
-            float h = !mUIModel.isSettingPanelOpen.Value ? Input.GetAxisRaw("Horizontal") : 0;
-            mrig.velocity = h != 0 ? 
-                new Vector2(Mathf.Clamp(mrig.velocity.x + h*moveAc,-movespeadMax,movespeadMax), mrig.velocity.y) :  
+            mrig.velocity = mInputX != 0 ? 
+                new Vector2(Mathf.Clamp(mrig.velocity.x + mInputX*moveAc,-movespeadMax,movespeadMax), mrig.velocity.y) :  
                 new Vector2(Mathf.MoveTowards(mrig.velocity.x,0,moveDx),mrig.velocity.y);
             //修改角色朝向
             direction = mrig.velocity.x != 0 && mrig.velocity.x < 0 ? -1 : mrig.velocity.x == 0 ? direction: 1;

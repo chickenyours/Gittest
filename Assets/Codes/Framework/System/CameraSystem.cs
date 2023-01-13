@@ -8,21 +8,33 @@ public interface ICameraSystem : ISystem
 
 public class CameraSystem : AbstractSystem,ICameraSystem
 {
-    private Transform followTarget;
-
+    //跟随目标
+    private Transform followTargetObject;
+    //跟随点的临时坐标
+    private Vector3 mTarget;
+    //定义死角
+    private float minX = -100f, minY = -100f, maxX = 100f, maxY = 100f;
+    //定义追踪速度
+    private float mFollowSpeed = 3f;
     protected override void OnInit()
     {
-        PublicMono.Instance.OnLateUpdate += Update;
+        PublicMono.Instance.OnFixedUpdate += Update;
+        mTarget.z = -10;
     }
 
     void ICameraSystem.SetTarget(Transform transform)
     {
-        followTarget = transform;
+        followTargetObject = transform;
     }
 
     void Update()
     {
-        if (!followTarget) return;
-        Camera.main.transform.localPosition = new Vector3(followTarget.localPosition.x, followTarget.localPosition.y, -10);
+        if (!followTargetObject) return;
+        mTarget.x = Mathf.Clamp(followTargetObject.position.x,minX,maxX);
+        mTarget.y = Mathf.Clamp(followTargetObject.position.y, minY, maxY);
+        Transform cm = Camera.main.transform;
+        if ((mTarget - cm.position).sqrMagnitude < 0.01) return;
+        cm.position = Vector3.Lerp(Camera.main.transform.position,mTarget, mFollowSpeed * Time.deltaTime);
+        //Camera.main.transform.localPosition = new Vector3(followTargetObject.localPosition.x, followTargetObject.localPosition.y, -10);
     }
 }

@@ -9,11 +9,12 @@ namespace QFramework
         {
             RegisterModel<IAudioModel>(new AudioModel());
             RegisterModel<IGameModel>(new GameModel());
+            RegisterModel<IUIModel>(new UIModel());
             RegisterSystem<ICameraSystem>(new CameraSystem());
             RegisterSystem<IAudioMgrSystem>(new AudioSystem());
             RegisterSystem<IObjectPoolSystem>(new ObjectpoolSystem());
             RegisterSystem<ITimeSystem>(new TimeSystem());
-            RegisterModel<IUIModel>(new UIModel());
+            RegisterSystem<IPlayerInputSystem>(new PlayerInputSystem());
         }
     }
     //继承IControll的便利形式

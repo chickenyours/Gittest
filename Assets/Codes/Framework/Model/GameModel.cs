@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using QFramework;
+using UnityEngine.InputSystem;
 
 
 public interface IGameModel : IModel
@@ -9,22 +10,19 @@ public interface IGameModel : IModel
     BindableProperty<int> score { get; }
     BindableProperty<int> shootTime { get; }  
     BindableProperty<int> direction { get; }
-    BindableProperty<float> mouseWorldX { get; }
-    BindableProperty<float> mouseWorldY { get; }
+    BindableProperty<Vector2> mousePosition { get; }
 }
 
 public class GameModel : AbstractModel,IGameModel
 {
-    /// <summary>
-    /// 储存玩家移动的方向
-    /// </summary>
+    
+    //储存玩家移动的方向
     BindableProperty<int> IGameModel.direction { get; } = new BindableProperty<int>(0);
     BindableProperty<int> IGameModel.shootTime { get; } = new BindableProperty<int>(1);
     BindableProperty<int> IGameModel.score { get; } = new BindableProperty<int>(0);
-    //保存鼠标坐标
-    public BindableProperty<float> mouseWorldX { get; } = new BindableProperty<float>(Input.mousePosition.x);
-    public BindableProperty<float> mouseWorldY { get; } = new BindableProperty<float>(Input.mousePosition.y);
-
+    //储存鼠标坐标
+    public BindableProperty<Vector2> mousePosition { get; } = new BindableProperty<Vector2>(Mouse.current.position.ReadValue());
+    //向单例注册Update委托
     protected override void OnInit()
     {
         PublicMono.Instance.OnUpdate += Update;
@@ -32,8 +30,7 @@ public class GameModel : AbstractModel,IGameModel
     //不断更新数据
     void Update()
     {
-        mouseWorldX.Value = Input.mousePosition.x;
-        mouseWorldY.Value = Input.mousePosition.y;
+        mousePosition.Value = Mouse.current.position.ReadValue();
     }
 }
 

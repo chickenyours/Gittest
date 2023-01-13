@@ -9,15 +9,15 @@ public class SetGameTargetPosition : MonoBehaviour, IController
     void Start()
     {
         transform.position = new Vector3(
-            this.GetModel<IGameModel>().mouseWorldX.Value,
-            this.GetModel<IGameModel>().mouseWorldY.Value,
+            this.GetModel<IGameModel>().mousePosition.Value.x,
+            this.GetModel<IGameModel>().mousePosition.Value.y,
             0f);
     }
     void LateUpdate()
     {
         transform.position = new Vector3(
-            this.GetModel<IGameModel>().mouseWorldX.Value,
-            this.GetModel<IGameModel>().mouseWorldY.Value,
+            this.GetModel<IGameModel>().mousePosition.Value.x,
+            this.GetModel<IGameModel>().mousePosition.Value.y,
             0f);
     }
 
