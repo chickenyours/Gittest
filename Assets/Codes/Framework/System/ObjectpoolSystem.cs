@@ -73,7 +73,6 @@ namespace QFramework
             }
             if (!mPoolRoot) mPoolRoot = new GameObject("PoolRoot").transform;
             mPoolDic.Add(obj.name, new PoolData(obj,mPoolRoot));
-            MonoBehaviour.print("ctreat a new PoolData:" + obj.name);
         }
         /// <summary>
         /// 清空对象池，多用于场景切换中

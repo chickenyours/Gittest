@@ -114,7 +114,7 @@ namespace QFramework
             else if (device is Pointer) type = typeof(Pointer);
             else if (device is Joystick) type = typeof(Joystick);
             //判断设备类型是否规范和是否有对应的注册事件
-            if (device == null || mRegisteredDevices.TryGetValue(type, out var CallBack)) return;
+            if (device == null || !mRegisteredDevices.TryGetValue(type, out var CallBack)) return;
             mCurDevice = device;
             CallBack?.Invoke();
         }

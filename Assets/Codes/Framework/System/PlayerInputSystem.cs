@@ -1,11 +1,18 @@
 ﻿using UnityEngine;
 using QFramework;
 using UnityEngine.InputSystem;
+using System;
 
 public interface IPlayerInputSystem : ISystem
 {
     void Enable();
     void Disable();
+    /// <summary>
+    /// 向InputDeviceMgrSystem注册事件
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="fun"></param>
+    void DeviceChangeAction<T>(Action fun);
 }
 public enum E_InputDevice
 {
@@ -45,7 +52,7 @@ public class PlayerInputSystem : AbstractSystem, IPlayerInputSystem, GameControl
         //注册GamePlay的所有输入委托
         mGameControll.GamePlay.SetCallbacks(this);
         //注册InputDeviceMgrSystem所有输入设备变更委托
-        this.GetSystem<IInputDeviceMgrSystem>().RegisterDevice<Keyboard>(() => { mCurrentDevice = E_InputDevice.Keyboard; });
+        this.GetSystem<IInputDeviceMgrSystem>().RegisterDevice<Keyboard>(() => { mCurrentDevice = E_InputDevice.Keyboard;});
         this.GetSystem<IInputDeviceMgrSystem>().RegisterDevice<Gamepad>(() => { mCurrentDevice = E_InputDevice.Gamepad; });
         this.GetSystem<IInputDeviceMgrSystem>().RegisterDevice<Pointer>(() => { mCurrentDevice = E_InputDevice.Pointer; });
     }
@@ -71,27 +78,12 @@ public class PlayerInputSystem : AbstractSystem, IPlayerInputSystem, GameControl
         {
             
             Vector2 input = context.ReadValue<Vector2>();
-            Debug.Log(input);
             //两种输入方式处理
             switch (mCurrentDevice)
             {
                 case E_InputDevice.Keyboard:
-                    var board = Keyboard.current;
-                    if ((board.dKey.isPressed || board.rightArrowKey.isPressed) 
-                        && (board.aKey.isPressed || board.leftArrowKey.isPressed))
-                    {
-                        switch (mMoveInputEvent.inputX)
-                        {
-                            
-                            case -1: mMoveInputEvent.inputX = board.dKey.wasPressedThisFrame || board.rightArrowKey.wasPressedThisFrame ? 1 : 0; Debug.Log("Conflict"); break;
-                            case 1: mMoveInputEvent.inputX = board.aKey.wasPressedThisFrame || board.leftArrowKey.wasPressedThisFrame ? -1 : 0; Debug.Log("Conflict"); break;
-                        }
-                    }
-                    else
-                    {
-                        mMoveInputEvent.inputX = (int)input.x;
-                        mMoveInputEvent.inputY = (int)input.y;
-                    }
+                    mMoveInputEvent.inputX = (int)input.x;
+                    mMoveInputEvent.inputY = (int)input.y;
                     break;
                 case E_InputDevice.Gamepad:
                     //处理遥感平滑操作问题，统一两极输出
@@ -99,10 +91,9 @@ public class PlayerInputSystem : AbstractSystem, IPlayerInputSystem, GameControl
                     mMoveInputEvent.inputY = Mathf.Abs(input.y) < sensitive ? 0 : input.y < 0 ? -1 : 1;
                     break;
             }
-        } 
+        }
         else if (context.canceled)
         {
-            Debug.Log("context.canceled");
             switch (mCurrentDevice)
             {
                 case E_InputDevice.Keyboard:
@@ -110,7 +101,7 @@ public class PlayerInputSystem : AbstractSystem, IPlayerInputSystem, GameControl
                     switch (mMoveInputEvent.inputX)
                     {
                         case -1: mMoveInputEvent.inputX = board.dKey.wasPressedThisFrame || board.rightArrowKey.wasPressedThisFrame ? 1 : 0; break;
-                        case  1: mMoveInputEvent.inputX = board.aKey.wasPressedThisFrame || board.leftArrowKey.wasPressedThisFrame ? -1 : 0; break;
+                        case 1: mMoveInputEvent.inputX = board.aKey.wasPressedThisFrame || board.leftArrowKey.wasPressedThisFrame ? -1 : 0; break;
                     }
                     break;
                 case E_InputDevice.Gamepad:
@@ -133,5 +124,10 @@ public class PlayerInputSystem : AbstractSystem, IPlayerInputSystem, GameControl
             mShootEvent.isTrigger = false;
         }
         this.SendEvent(mShootEvent);
+    }
+
+    void IPlayerInputSystem.DeviceChangeAction<T>(Action fun)
+    {
+        this.GetSystem<IInputDeviceMgrSystem>().RegisterDevice<T>(fun);
     }
 }
