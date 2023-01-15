@@ -39,6 +39,10 @@ namespace PlayerControl
 
         //获取输入执行判断接口
         private IUIModel mUIModel;
+        private void Awake()
+        {
+            this.SendCommand<InitGameCommand>();
+        }
         private void Start()
         {
             //mUIModel = this.GetModel<IUIModel>();

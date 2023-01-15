@@ -14,6 +14,7 @@ namespace QFramework
             RegisterSystem<IAudioMgrSystem>(new AudioSystem());
             RegisterSystem<IObjectPoolSystem>(new ObjectpoolSystem());
             RegisterSystem<ITimeSystem>(new TimeSystem());
+            RegisterSystem<IInputDeviceMgrSystem>(new InputDeviceMgrSystem());
             RegisterSystem<IPlayerInputSystem>(new PlayerInputSystem());
         }
     }
